@@ -1,0 +1,514 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Dev Dashboard</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="https://cdn-icons-png.flaticon.com/512/619/619175.png"
+    />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        height: 100vh;
+        background: #000;
+        color: #28ff00;
+        font-family: "Share Tech Mono", monospace;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+      #time {
+        font-size: 8vw;
+      }
+
+      #date {
+        font-size: 3vw;
+        opacity: 0.7;
+      }
+
+      #weather {
+        margin-top: 20px;
+        font-size: 1.5rem;
+      }
+
+      #quote {
+        margin-top: 40px;
+        opacity: 0.6;
+        text-align: center;
+        max-width: 600px;
+      }
+
+      .shortcuts {
+        position: absolute;
+        bottom: 40px;
+        display: flex;
+        gap: 20px;
+
+        @media (max-width: 600px) {
+          display: none;
+         /* flex-direction: column;  */
+        }
+      }
+
+      a {
+        color: #28ff00;
+        text-decoration: none;
+        border: 1px solid #28ff00;
+        padding: 10px 20px;
+        transition: 0.2s;
+      }
+
+      a:hover {
+        background: #28ff00;
+        color: #000;
+      }
+      .terminal {
+        background-color: #050505;
+        position: absolute;
+        bottom: 120px;
+        width: 600px;
+        max-width: 90%;
+        font-size: 1rem;
+        cursor: text;
+        /* border: 1px solid #28ff00; */
+        border-radius: 8px;
+        padding: 0 0.5rem;
+      }
+
+      #terminal-output {
+        min-height: 80px;
+        margin-bottom: 10px;
+      }
+
+      .terminal-input-line {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        position: relative;
+      }
+
+      #terminal-input {
+        background: transparent;
+        border: none;
+        outline: none;
+        width: 100%;
+        font-family: inherit;
+        color: transparent;
+        caret-color: transparent;
+      }
+      .input-wrapper {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+      }
+      #fake-input {
+        white-space: pre;
+      }
+
+      .cursor {
+        position: absolute;
+        bottom: 2px;
+        width: 10px;
+        height: 2px;
+        background: #28ff00;
+        animation: blink 1s infinite;
+      }
+      @keyframes blink {
+        50% {
+          opacity: 0;
+        }
+      }
+      #matrix {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="time"></div>
+    <div id="date"></div>
+    <div id="weather">Loading weather...</div>
+    <div id="quote"></div>
+
+    <div class="terminal">
+      <div id="terminal-output"></div>
+      <div class="terminal-input-line">
+        <span class="prompt">&gt;</span>
+        <span id="fake-input"></span>
+        <span class="cursor"></span>
+        <input id="terminal-input" autofocus />
+      </div>
+    </div>
+
+    <canvas id="matrix"></canvas>
+
+    <div class="shortcuts">
+      <a href="https://github.com">GitHub</a>
+      <a href="https://chat.openai.com">ChatGPT</a>
+      <a href="https://stackoverflow.com">StackOverflow</a>
+      <a href="https://mail.google.com">Gmail</a>
+    </div>
+
+    <script>
+      const WEEK = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+      const MONTHS = [
+        "JAN",
+        "FEB",
+        "MAR",
+        "APR",
+        "MAY",
+        "JUN",
+        "JUL",
+        "AUG",
+        "SEP",
+        "OCT",
+        "NOV",
+        "DEC",
+      ];
+
+      function pad(n) {
+        return String(n).padStart(2, "0");
+      }
+
+      function updateClock() {
+        const now = new Date();
+
+        let hours = now.getHours();
+        const ampm = hours >= 12 ? "PM" : "AM";
+        hours = hours % 12 || 12;
+
+        time.textContent = `${pad(hours)}:${pad(now.getMinutes())}:${pad(now.getSeconds())} ${ampm}`;
+
+        date.textContent = `${WEEK[now.getDay()]} ${MONTHS[now.getMonth()]}-${pad(now.getDate())}-${now.getFullYear()}`;
+      }
+
+      setInterval(updateClock, 1000);
+      updateClock();
+
+      /* WEATHER use public geodata */
+      async function loadWeather() {
+        try {
+          const geo = await fetch("https://ipapi.co/json/");
+          const geoData = await geo.json();
+
+          const cities = [geoData.city, "Cancun", "Monterrey"];
+
+          const requests = cities.map((city) =>
+            fetch(`https://wttr.in/${city}?format=%t+%C`)
+              .then((r) => r.text())
+              .then((weather) => `${city}: ${weather}`),
+          );
+
+          const results = await Promise.all(requests);
+
+          document.getElementById("weather").textContent = results.join(" | ");
+        } catch {
+          document.getElementById("weather").textContent =
+            "Weather unavailable";
+        }
+      }
+      loadWeather();
+
+      const quotes = [
+        "Ship early. Ship often.",
+        "Make it work. Make it right. Make it fast.",
+        "Code is poetry.",
+        "Stay curious.",
+        "Small commits save lives.",
+        "Debugging builds character.",
+        "First solve the problem, then write the code.",
+        "Programs must be written for people to read.",
+        "Simplicity is the soul of efficiency.",
+        "Code never lies, comments sometimes do.",
+        "Fix the cause, not the symptom.",
+        "Good code is its own best documentation.",
+        "Deleted code is debugged code.",
+        "First make it correct, then fast.",
+        "Experience is the name everyone gives to their mistakes.",
+        "Talk is cheap. Show me the code.",
+        "Before software can be reusable it first has to be usable.",
+        "Automation is good, so long as you know exactly where to put the machine.",
+        "The best error message is the one that never shows up.",
+        "Learning never exhausts the mind.",
+        "Any fool can write code that a computer understands.",
+        "Clean code always looks like it was written by someone who cares.",
+        "If debugging is removing bugs, programming must be adding them.",
+        "Programming isn't about typing, it's about thinking.",
+        "Code less, think more.",
+        "Small steps every day.",
+        "Make it simple but significant.",
+        "Consistency beats intensity.",
+        "Stay hungry. Stay foolish.",
+        "Build things people need.",
+        "Perfect is the enemy of done.",
+        "Version control saves friendships.",
+        "Write code like the next person maintaining it is a psychopath.",
+        "Optimization without measurement is guessing.",
+        "Readable code > clever code.",
+        "Every expert was once a beginner.",
+        "Discipline equals freedom.",
+      ];
+      quote.textContent = quotes[Math.floor(Math.random() * quotes.length)];
+
+      //  TERMINAL SYSTEM
+      const input = document.getElementById("terminal-input");
+      const output = document.getElementById("terminal-output");
+      const fakeInput = document.getElementById("fake-input");
+      const cursor = document.querySelector(".cursor");
+      const commandHistory = [];
+      let historyIndex = -1;
+
+      input.addEventListener("input", () => {
+        fakeInput.textContent = input.value;
+      });
+      const prompt = document.querySelector(".prompt");
+
+      document.querySelectorAll(".shortcuts a").forEach((link) => {
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+      });
+
+      function updateCursor() {
+        fakeInput.textContent = input.value || "";
+        const textWidth = fakeInput.offsetWidth;
+        const promptWidth = prompt.offsetWidth;
+        cursor.style.left = promptWidth + textWidth + "px";
+      }
+
+      ["input", "focus", "click", "keyup"].forEach((event) => {
+        input.addEventListener(event, updateCursor);
+      });
+      updateCursor();
+      document.addEventListener("click", () => {
+        input.focus();
+      });
+
+      const commands = {
+        help: () =>
+          "Commands: help, hello, clear, time, date, matrix, stop | Shortcuts: git, gpt, mail, stack",
+        github: () => {
+          window.location.href = "https://github.com";
+        },
+        gmail: () => {
+          window.location.href = "https://mail.google.com";
+        },
+        chatgpt: () => {
+          window.location.href = "https://chat.openai.com";
+        },
+        time: () => new Date().toLocaleTimeString(),
+        date: () => new Date().toLocaleDateString(),
+        clear: () => {
+          output.innerHTML = "";
+          return "";
+        },
+        hello: () => {
+          output.innerHTML = "";
+          return "Hello there! Welcome to your Dev Dashboard";
+        },
+        matrix: () => {
+          if (matrixInterval) {
+            return "Matrix already running";
+          }
+          startMatrix();
+          return "Matrix rain started";
+        },
+        stop: () => {
+          if (!matrixInterval) {
+            return "Error: Matrix is not running";
+          }
+          stopMatrix();
+          return "Matrix stopped";
+        },
+      };
+      const shortcuts = {
+        git: "https://github.com",
+        github: "https://github.com",
+        gpt: "https://chat.openai.com",
+        chatgpt: "https://chat.openai.com",
+        mail: "https://mail.google.com",
+        gmail: "https://mail.google.com",
+        stack: "https://stackoverflow.com",
+        so: "https://stackoverflow.com",
+      };
+      const commandList = [...Object.keys(commands), ...Object.keys(shortcuts)];
+
+      // prints text in terminal output
+      function print(text) {
+        const line = document.createElement("div");
+        line.textContent = text;
+        output.appendChild(line);
+      }
+
+      // ENTER listener for commands
+      input.addEventListener("keydown", (e) => {
+        if (e.key !== "Enter") return;
+
+        const cmd = input.value.trim().toLowerCase();
+
+        if (cmd) {
+          commandHistory.push(cmd);
+          historyIndex = commandHistory.length;
+        }
+
+        print("> " + cmd);
+
+        if (commands[cmd]) {
+          const result = commands[cmd]();
+          if (result) print(result);
+        } else if (shortcuts[cmd]) {
+          print("Opening " + cmd + "...");
+          window.open(shortcuts[cmd], "_blank", "noopener,noreferrer");
+        } else if (handleSearch(cmd)) {
+          print("Searching...");
+        } else {
+          print("Command not found");
+        }
+
+        function resetInput() {
+          input.value = "";
+          fakeInput.textContent = "";
+        }
+        resetInput();
+        updateCursor();
+      });
+
+      //  AUTOCOMPLETE
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Tab") {
+          e.preventDefault();
+
+          const value = input.value.toLowerCase();
+          const match = commandList.find((cmd) => cmd.startsWith(value));
+
+          if (match) input.value = match;
+          fakeInput.textContent = match;
+          updateCursor();
+        }
+      });
+
+      // ArrowUp and ArrowDown for command history
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowUp") {
+          e.preventDefault();
+
+          if (historyIndex > 0) {
+            historyIndex--;
+            input.value = commandHistory[historyIndex];
+          }
+
+          fakeInput.textContent = input.value;
+          updateCursor();
+        }
+
+        if (e.key === "ArrowDown") {
+          e.preventDefault();
+
+          if (historyIndex < commandHistory.length - 1) {
+            historyIndex++;
+            input.value = commandHistory[historyIndex];
+          } else {
+            historyIndex = commandHistory.length;
+            input.value = "";
+          }
+
+          fakeInput.textContent = input.value;
+          updateCursor();
+        }
+      });
+
+      // Matrix
+      const canvas = document.getElementById("matrix");
+      const ctx = canvas.getContext("2d");
+
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const chars =
+        "0123456789" +
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+        "abcdefghijklmnopqrstuvwxyz" +
+        "!@#$%^&*()_+-=[]{}<>?/|" +
+        "░▒▓█▄▀■□◆◇○●◢◣◤◥" +
+        "⟟⟒⟟⟟⟒⟟⟟⟒" +
+        "ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜ" +
+        "アイウエオカキクケコサシスセソタチツテト";
+      const fontSize = 16;
+      const columns = canvas.width / fontSize;
+
+      const drops = Array(Math.floor(columns)).fill(1);
+
+      let matrixInterval = null;
+
+      function drawMatrix() {
+        ctx.fillStyle = "rgba(0,0,0,0.05)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = "#28ff00";
+        ctx.font = fontSize + "px monospace";
+
+        drops.forEach((y, i) => {
+          const text = chars.charAt(Math.floor(Math.random() * chars.length));
+          ctx.fillStyle = `rgba(40,255,0,${Math.random()})`;
+          const x = i * fontSize;
+          ctx.fillText(text, x, y * fontSize);
+          if (y * fontSize > canvas.height && Math.random() > 0.975) {
+            drops[i] = 0;
+          }
+          drops[i] += Math.random() * 1.5; // variable speed
+        });
+      }
+      function startMatrix() {
+        if (matrixInterval) return;
+        matrixInterval = setInterval(drawMatrix, 33);
+      }
+      function stopMatrix() {
+        clearInterval(matrixInterval);
+        matrixInterval = null;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+
+      function handleSearch(cmd) {
+        const [command, ...queryParts] = cmd.split(" ");
+        const query = queryParts.join(" ");
+        if (!query) return false;
+
+        const engines = {
+          g: `https://www.google.com/search?q=${query}`,
+          yt: `https://www.youtube.com/results?search_query=${query}`,
+          gh: `https://github.com/search?q=${query}`,
+          npm: `https://www.npmjs.com/search?q=${query}`,
+          mdn: `https://developer.mozilla.org/en-US/search?q=${query}`,
+          so: `https://stackoverflow.com/search?q=${query}`,
+          stack: `https://stackoverflow.com/search?q=${query}`,
+        };
+        if (engines[command]) {
+          window.open(engines[command], "_blank");
+          return true;
+        }
+        return false;
+      }
+    </script>
+  </body>
+</html>

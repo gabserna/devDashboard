@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="https://cdn-icons-png.flaticon.com/128/2784/2784459.png"
+    />
+    <title>Time & Date</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      height: 100vh;
+      background: #000;
+      color: #28ff00;
+      font-family: "Share Tech Mono", monospace;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      letter-spacing: 0.05em;
+    }
+    #time {
+      font-size: 8vw;
+    }
+    #date {
+      font-size: 3vw;
+      opacity: 0.7;
+    }
+  </style>
+  </head>
+  <body>
+      <p id="time"></p>
+      <p id="date"></p>
+  </body>
+
+  <script defer type="text/javascript">
+    const WEEK = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+    const MONTHS = [
+      "JAN",
+      "FEB",
+      "MAR",
+      "APR",
+      "MAY",
+      "JUN",
+      "JUL",
+      "AUG",
+      "SEP",
+      "OCT",
+      "NOV",
+      "DEC",
+    ];
+
+    function updateTime() {
+      let now = new Date();
+      let hours = now.getHours();
+      let ampm = hours >= 12 ? "PM" : "AM";
+
+      hours = hours % 12;
+      hours = hours ? hours : 12;
+
+      document.getElementById("time").innerText =
+        zeroPadding(hours, 2) +
+        ":" +
+        zeroPadding(now.getMinutes(), 2) +
+        ":" +
+        zeroPadding(now.getSeconds(), 2) +
+        " " +
+        ampm;
+      //  + ",";
+
+      document.getElementById("date").innerText =
+        WEEK[now.getDay()] +
+        " " +
+        MONTHS[now.getMonth()] +
+        "-" +
+        zeroPadding(now.getDate(), 2) +
+        "-" +
+        now.getFullYear();
+    }
+
+    updateTime();
+    setInterval(updateTime, 1000);
+
+    function zeroPadding(num, digit) {
+      return String(num).padStart(digit, "0");
+    }
+  </script>
+</html>
