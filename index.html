@@ -63,7 +63,7 @@
 
         @media (max-width: 600px) {
           display: none;
-         /* flex-direction: column;  */
+          /* flex-direction: column;  */
         }
       }
 
@@ -147,11 +147,13 @@
   </head>
 
   <body>
+    <!-- clock, date, weather, quote -->
     <div id="time"></div>
     <div id="date"></div>
     <div id="weather">Loading weather...</div>
     <div id="quote"></div>
 
+    <!-- terminal interface -->
     <div class="terminal">
       <div id="terminal-output"></div>
       <div class="terminal-input-line">
@@ -162,8 +164,10 @@
       </div>
     </div>
 
+    <!-- matrix background which I really love and wanted to implement for a long time -->
     <canvas id="matrix"></canvas>
 
+    <!-- shortcuts buttons -->
     <div class="shortcuts">
       <a href="https://github.com">GitHub</a>
       <a href="https://chat.openai.com">ChatGPT</a>
@@ -172,21 +176,9 @@
     </div>
 
     <script>
+      // clock system with formatted time and date
       const WEEK = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
-      const MONTHS = [
-        "JAN",
-        "FEB",
-        "MAR",
-        "APR",
-        "MAY",
-        "JUN",
-        "JUL",
-        "AUG",
-        "SEP",
-        "OCT",
-        "NOV",
-        "DEC",
-      ];
+      const MONTHS = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC",];
 
       function pad(n) {
         return String(n).padStart(2, "0");
@@ -207,7 +199,7 @@
       setInterval(updateClock, 1000);
       updateClock();
 
-      /* WEATHER use public geodata */
+      // Weather using free public geodata, no API key needed, just fetch the city weather from wttr.in
       async function loadWeather() {
         try {
           const geo = await fetch("https://ipapi.co/json/");
@@ -231,6 +223,7 @@
       }
       loadWeather();
 
+      // Dev quotes, just a random one from the list every time you load the page
       const quotes = [
         "Ship early. Ship often.",
         "Make it work. Make it right. Make it fast.",
@@ -272,7 +265,7 @@
       ];
       quote.textContent = quotes[Math.floor(Math.random() * quotes.length)];
 
-      //  TERMINAL SYSTEM
+      //  Terminal engine with commands, shortcuts, autocomplete and command history
       const input = document.getElementById("terminal-input");
       const output = document.getElementById("terminal-output");
       const fakeInput = document.getElementById("fake-input");
@@ -361,7 +354,7 @@
         output.appendChild(line);
       }
 
-      // ENTER listener for commands
+      // Listener for commands execution on Enter key
       input.addEventListener("keydown", (e) => {
         if (e.key !== "Enter") return;
 
@@ -394,7 +387,7 @@
         updateCursor();
       });
 
-      //  AUTOCOMPLETE
+      //  Autocomplete with Tab key, matches commands and shortcuts
       input.addEventListener("keydown", (e) => {
         if (e.key === "Tab") {
           e.preventDefault();
@@ -438,7 +431,7 @@
         }
       });
 
-      // Matrix
+      // Matrix rain effect, works with 'matrix' and 'stop' commands in terminal
       const canvas = document.getElementById("matrix");
       const ctx = canvas.getContext("2d");
 
@@ -452,8 +445,22 @@
         "!@#$%^&*()_+-=[]{}<>?/|" +
         "░▒▓█▄▀■□◆◇○●◢◣◤◥" +
         "⟟⟒⟟⟟⟒⟟⟟⟒" +
+        "诶比西迪伊吉艾杰开哦屁提维维克斯吾艾尔艾娜欧米伽" +
         "ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜ" +
-        "アイウエオカキクケコサシスセソタチツテト";
+        "アイウエオカキクケコサシスセソタチツテト" +
+        "αβγδεζηθικλμνξοπρστυφχψω" +
+        "ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ" +
+        "АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ" +
+        "абвгдежзийклмнопрстуфхцчшщъыьэюя" +
+        "ابتثجحخدذرزسشصضطظعغفقكلمنهوي" +
+        "アイウエオカキクケコサシスセソタチツテトナニヌネノ" +
+        "ハヒフヘホマミムメモヤユヨラリルレロワヲン" +
+        "あいうえおかきくけこさしすせそたちつてとなにぬねの" +
+        "가나다라마바사아자차카타파하" +
+        "∑∏√∞≈≠≤≥∫∆∇∂µπΩ" +
+        "ᚠᚢᚦᚨᚱᚲᚷᚹᚺᚾᛁᛃᛇᛈᛉᛋᛏ" +
+        "⠁⠃⠇⠉⠙⠑⠓⠕⠗⠞⠺⠵";
+
       const fontSize = 16;
       const columns = canvas.width / fontSize;
 
@@ -476,7 +483,7 @@
           if (y * fontSize > canvas.height && Math.random() > 0.975) {
             drops[i] = 0;
           }
-          drops[i] += Math.random() * 1.5; // variable speed
+          drops[i] += Math.random() * 1.5;
         });
       }
       function startMatrix() {
@@ -489,6 +496,7 @@
         ctx.clearRect(0, 0, canvas.width, canvas.height);
       }
 
+      // Search handler for commands like "g something" to search "something" on Google, "yt something" for YouTube, gh for GitHub, npm for npmjs, mdn for MDN, so or stack for StackOverflow
       function handleSearch(cmd) {
         const [command, ...queryParts] = cmd.split(" ");
         const query = queryParts.join(" ");
@@ -512,3 +520,4 @@
     </script>
   </body>
 </html>
+<!-- enjoy -->
