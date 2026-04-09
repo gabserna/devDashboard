@@ -10,6 +10,7 @@ or new tab:
 <p align="center">
   <img src="src/dashboard.png" width="600"/>
 </p>
+
 ------------------------------------------------------------------------
 
 ## ✨ Features
