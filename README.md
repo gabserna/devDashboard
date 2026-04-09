@@ -7,11 +7,8 @@ or new tab:
 - No frameworks. No builds. No dependencies, just one file.
 - Built with: HTML, CSS, JS.
 
-
---![alt text](src/dashboard.png)
-
 <p align="center">
-  <img src="src/dashboard.png" width="800"/>
+  <img src="src/dashboard.png" width="600"/>
 </p>
 ------------------------------------------------------------------------
 
