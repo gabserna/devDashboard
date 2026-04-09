@@ -1,4 +1,4 @@
-# Dev Dashboard ⚡
+# Time and Date with Steroids ⚡
 
 A minimalist developer dashboard made to work as a personal start page
 or new tab: 
@@ -10,6 +10,8 @@ or new tab:
 <p align="center">
   <img src="src/dashboard.png" width="600"/>
 </p>
+
+git it a try!
 
 ------------------------------------------------------------------------
 
