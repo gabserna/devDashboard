@@ -1,83 +1,85 @@
-# Dev Dashboard
+# Dev Dashboard ⚡
 
-A minimalist **developer-focused dashboard** designed as a personal start page or browser new tab.
-It combines a terminal-style interface, live system information, and a cyberpunk aesthetic inspired by classic hacker environments.
+A minimalist developer dashboard made to work as a personal start page
+or new tab: 
 
-## Overview
+- Fast, simple, keyboard-driven. Just open the file and go.
+- No frameworks. No builds. No dependencies, just one file.
+- Built with: HTML, CSS, JS.
 
-Dev Dashboard transforms a simple HTML page into an interactive developer command center.
-It displays real-time information while providing a fake terminal that allows navigation, shortcuts, and quick searches directly from the keyboard.
 
-The goal of this project is simplicity with KISS methodology:
+--![alt text](src/dashboard.png)
 
-* No frameworks
-* No build tools
-* No dependencies
-* Just **pure HTML, CSS, and JS**
+<p align="center">
+  <img src="src/dashboard.png" width="800"/>
+</p>
+------------------------------------------------------------------------
 
-Perfect for learning, customization, or using as a personal developer homepage.
+## ✨ Features
 
-## Features
+-   Live clock & formatted date\
+-   Weather (your location + random cities)\
+-   Random dev quotes\
+-   Fake terminal interface\
+-   Command history + autocomplete\
+-   Quick shortcuts & search commands\
+-   Matrix rain animation background\
+-   Responsive minimalist design
 
-* Live digital clock and formatted date
-* Automatic weather detection using public APIs
-* Random developer quotes
-* Interactive terminal interface
-* Command history navigation
-* Command autocomplete
-* Shortcut commands for common developer tools
-* Built-in search engines (Google, YouTube, GitHub, MDN, NPM, StackOverflow)
-* Matrix-style animated background (give it a try!)
-* Responsive minimalist design
+------------------------------------------------------------------------
 
-## Terminal Commands
+## 💻 Terminal Commands
 
-Examples:
+    help      show commands
+    time      current time
+    date      current date
+    clear     clear terminal
+    hello     welcome message
+    matrix    start matrix rain
+    stop      stop matrix rain
 
-* `help` → list available commands
-* `time` → show current time
-* `date` → show current date
-* `clear` → clear terminal output
-* `matrix` → start matrix animation
-* `stop` → stop matrix animation
-* `git`, `gpt`, `mail`, `stack` → open shortcuts
+Shortcuts:
+    git   github
+    gpt   chatgpt
+    mail  gmail
+    stack stackoverflow
 
-Search directly from terminal:
+Search from terminal:
+    g vue lifecycle
+    yt javascript closures
+    npm axios
+    mdn fetch api
 
-* `g vue 2 lifecycle`
-* `mdn fetch api`
-* `npm axios`
-* `yt javascript closures`
+------------------------------------------------------------------------
 
-## Usage
+## 🌧 Matrix Rain
+Canvas-based animation inspired by hacker terminals.
 
-1. Clone or download the repository
-2. Open the HTML file in your browser
-3. (Optional) Set it as your browser **New Tab** page
+Character set includes:
+-   Latin letters & numbers
+-   Symbols
+-   Greek & Cyrillic
+-   Arabic characters
+-   Japanese Katakana & Hiragana
+-   Korean Hangul
+-   Chinese characters
+-   Runes, braille & geometric symbols
+-   try your own characters by editing the code!
 
-```bash
-git clone <repo-url>
-cd devDashboard
-open devDashboard.html
-```
+Run: `matrix`
+Stop: `stop`
 
-## Customization Ideas
+------------------------------------------------------------------------
 
-* Feel free to add your own personal shortcuts
-* Create custom commands
-* Save history with localStorage
-* Add themes (Dracula, Nord, Cyberpunk)
-* Convert into a browser extension
-* Integrate with APIs (GitHub, Twitter, etc.)
-* Add a to-do list or notes section
-* Implement a dark mode toggle
-* Add a music player or podcast section
-* and many more!
+## 🌤 Weather
+Uses Geolocation API to get your location and OpenWeatherMap API for data.
+-   Current weather with icon
+-   Temperature in Celsius
+-   Random city weather on refresh
+-   Fallback if geolocation denied or API fails
+-   No API key needed, but you can add one for better reliability (see code comments)
+-   Designed to be simple and fast, not a full weather app
+   
+------------------------------------------------------------------------
 
-## Philosophy
-
-This project embraces the idea that powerful tools don't need complex stacks.
-A single static file can still deliver an engaging developer experience.
-
-Built for developers who enjoy terminals, minimalism, and fast workflows.
-
+## Keep it simple and enjoy!
