@@ -44,13 +44,14 @@
       }
 
       #weather {
-        margin-top: 20px;
+        margin-top: 1.5rem;
         font-size: 1.5rem;
+        opacity: 0.8;
       }
 
       #quote {
-        margin-top: 40px;
-        opacity: 0.6;
+        margin-top: 1.5rem;
+        opacity: 0.4;
         text-align: center;
         max-width: 600px;
       }
@@ -61,7 +62,7 @@
         position: absolute;
         bottom: 40px;
         display: flex;
-        gap: 20px;
+        gap: 1.5rem;
 
         @media (max-width: 600px) {
           display: none;
@@ -182,7 +183,6 @@
       // clock system with formatted time and date
       const WEEK = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
       const MONTHS = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC",];
-
 
       function pad(n) {
         return String(n).padStart(2, "0");
@@ -335,46 +335,56 @@
       setInterval(loadWeather, 60000);
 
       // Dev quotes, just a random one from the list every time you load the page
-      const quotes = [
-        "Ship early. Ship often.",
-        "Make it work. Make it right. Make it fast.",
-        "Code is poetry.",
-        "Stay curious.",
-        "Small commits save lives.",
-        "Debugging builds character.",
-        "First solve the problem, then write the code.",
-        "Programs must be written for people to read.",
-        "Simplicity is the soul of efficiency.",
-        "Code never lies, comments sometimes do.",
-        "Fix the cause, not the symptom.",
-        "Good code is its own best documentation.",
-        "Deleted code is debugged code.",
-        "First make it correct, then fast.",
-        "Experience is the name everyone gives to their mistakes.",
-        "Talk is cheap. Show me the code.",
-        "Before software can be reusable it first has to be usable.",
-        "Automation is good, so long as you know exactly where to put the machine.",
-        "The best error message is the one that never shows up.",
-        "Learning never exhausts the mind.",
-        "Any fool can write code that a computer understands.",
-        "Clean code always looks like it was written by someone who cares.",
-        "If debugging is removing bugs, programming must be adding them.",
-        "Programming isn't about typing, it's about thinking.",
-        "Code less, think more.",
-        "Small steps every day.",
-        "Make it simple but significant.",
-        "Consistency beats intensity.",
-        "Stay hungry. Stay foolish.",
-        "Build things people need.",
-        "Perfect is the enemy of done.",
-        "Version control saves friendships.",
-        "Write code like the next person maintaining it is a psychopath.",
-        "Optimization without measurement is guessing.",
-        "Readable code > clever code.",
-        "Every expert was once a beginner.",
-        "Discipline equals freedom.",
-      ];
-      quote.textContent = quotes[Math.floor(Math.random() * quotes.length)];
+      document.addEventListener("DOMContentLoaded", () => {
+        const quotes = [
+          "Ship early. Ship often.",
+          "Make it work. Make it right. Make it fast.",
+          "Code is poetry.",
+          "Stay curious.",
+          "Small commits save lives.",
+          "Debugging builds character.",
+          "First solve the problem, then write the code.",
+          "Programs must be written for people to read.",
+          "Simplicity is the soul of efficiency.",
+          "Code never lies, comments sometimes do.",
+          "Fix the cause, not the symptom.",
+          "Good code is its own best documentation.",
+          "Deleted code is debugged code.",
+          "First make it correct, then fast.",
+          "Experience is the name everyone gives to their mistakes.",
+          "Talk is cheap. Show me the code.",
+          "Before software can be reusable it first has to be usable.",
+          "Automation is good, so long as you know exactly where to put the machine.",
+          "The best error message is the one that never shows up.",
+          "Learning never exhausts the mind.",
+          "Any fool can write code that a computer understands.",
+          "Clean code always looks like it was written by someone who cares.",
+          "If debugging is removing bugs, programming must be adding them.",
+          "Programming isn't about typing, it's about thinking.",
+          "Code less, think more.",
+          "Small steps every day.",
+          "Make it simple but significant.",
+          "Consistency beats intensity.",
+          "Stay hungry. Stay foolish.",
+          "Build things people need.",
+          "Perfect is the enemy of done.",
+          "Version control saves friendships.",
+          "Write code like the next person maintaining it is a psychopath.",
+          "Optimization without measurement is guessing.",
+          "Readable code > clever code.",
+          "Every expert was once a beginner.",
+          "Discipline equals freedom.",
+        ];
+        const quote = document.querySelector("#quote");
+        if (quote) {
+          quote.textContent = `"${quotes[Math.floor(Math.random() * quotes.length)]}"`;
+        }
+        if (!quote) {
+          console.warn("Quote element not found");
+          return;
+        }
+        // console.log(document.querySelector("#quote"));
+      });
 
       //  Terminal engine with commands, shortcuts, autocomplete and command history
       const input = document.getElementById("terminal-input");
