@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Paleta Gris Oscuro</title>
+
+    <style>
+      /* Fondo general */
+      body {
+        background: #111;
+        font-family: Arial;
+        color: white;
+        padding: 20px;
+      }
+
+      /* Grid de colores */
+      .palette {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 10px;
+        margin-top: 20px;
+      }
+
+      /* Cada bloque */
+      .color {
+        height: 80px;
+        display: flex;
+        align-items: end;
+        justify-content: center;
+        font-size: 12px;
+        cursor: pointer;
+        padding: 5px;
+        border-radius: 6px;
+        transition: 0.2s;
+      }
+
+      /* hover */
+      .color:hover {
+        transform: scale(1.05);
+      }
+
+      /* preview seleccionado */
+      .preview {
+        margin-top: 20px;
+        padding: 20px;
+        border-radius: 8px;
+        text-align: center;
+        font-size: 18px;
+      }
+
+      input[type="color"] {
+        width: 120px;
+        height: 50px;
+        border: none;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h2>Paleta Gris Oscuro + Color Picker</h2>
+
+    <!-- COLOR PICKER -->
+    <label>Selecciona cualquier color:</label><br /><br />
+    <input type="color" id="picker" value="#404040" />
+
+    <!-- PREVIEW -->
+    <div id="preview" class="preview" style="background: #404040">#404040</div>
+
+    <!-- PALETA -->
+    <div class="palette" id="palette"></div>
+
+    <script>
+      /* Lista de grises */
+      const grays = [
+        "#0A0A0A",
+        "#111111",
+        "#141414",
+        "#181818",
+        "#1C1C1C",
+        "#202020",
+        "#242424",
+        "#282828",
+        "#2C2C2C",
+        "#303030",
+        "#343434",
+        "#383838",
+        "#3C3C3C",
+        "#404040",
+        "#444444",
+        "#484848",
+        "#4C4C4C",
+        "#505050",
+        "#545454",
+        "#585858",
+        "#5C5C5C",
+        "#606060",
+        "#646464",
+        "#686868",
+        "#6C6C6C",
+        "#707070",
+        "#747474",
+        "#787878",
+        "#7C7C7C",
+        "#808080",
+      ];
+
+      const palette = document.getElementById("palette");
+      const preview = document.getElementById("preview");
+      const picker = document.getElementById("picker");
+
+      /* Crear bloques dinámicamente */
+      grays.forEach((color) => {
+        const div = document.createElement("div");
+        div.className = "color";
+        div.style.background = color;
+        div.textContent = color;
+
+        /* click selecciona color */
+        div.addEventListener("click", () => {
+          updateColor(color);
+        });
+
+        palette.appendChild(div);
+      });
+
+      /* Actualiza preview */
+      function updateColor(color) {
+        preview.style.background = color;
+        preview.textContent = color;
+
+        /* sincroniza picker */
+        picker.value = color;
+
+        /* copia al clipboard */
+        navigator.clipboard.writeText(color);
+      }
+
+      /* Cambio desde color picker */
+      picker.addEventListener("input", (e) => {
+        updateColor(e.target.value);
+      });
+    </script>
+  </body>
+</html>
