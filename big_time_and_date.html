@@ -8,6 +8,10 @@
       rel="stylesheet"
     />
     <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <link
       rel="icon"
       type="image/x-icon"
       href="https://cdn-icons-png.flaticon.com/128/2784/2784459.png"
@@ -39,50 +43,337 @@
         font-size: clamp(1.2rem, 3vw, 2rem);
         opacity: 0.7;
       }
+
+      .tools {
+        display: flex;
+        gap: 50px;
+        margin-top: 50px;
+      }
+      #cronometro,
+      #timer {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        align-items: center;
+        border: 2px solid #28ff00;
+        border-radius: 20px;
+        padding: 2rem;
+        width: 30rem;
+      }
+      #display,
+      #timerDisplay {
+        font-size: clamp(1.5rem, 4vw, 3rem);
+      }
+      #buttonsBar {
+        display: flex;
+        gap: 10px;
+      }
+      button {
+        border: none;
+        background: #222;
+        color: white;
+        padding: 12px;
+        margin: 5px;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+      .material-icons {
+        font-size: 28px;
+        vertical-align: middle;
+      }
+
+      button:hover {
+        background: #444;
+      }
+      @keyframes blink {
+        0% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+      @keyframes blinkText {
+        0% { color: red; }
+        50% { color: #28ff00; }
+        100% { color: red; }
+      }
+      @keyframes blinkBorder {
+        0% { border-color: #28ff00; }
+        50% { border-color: red; }
+        100% { border-color: #28ff00; }
+      }
+      .blink {
+        animation:
+          blinkText 0.6s infinite,
+          blinkBorder 0.6s infinite;
+      }
+      #presets {
+        display: flex;
+        gap: 10px;
+      }
+      .preset-active {
+        background: #28ff00;
+        color: black;
+      }
     </style>
   </head>
   <body>
-    <p id="time"></p>
-    <p id="date"></p>
+    <div>
+      <p id="time"></p>
+      <p id="date"></p>
+    </div>
+
+    <div class="tools">
+      <div id="cronometro">
+        <h3>Cronómetro</h3>
+        <h1 id="display">00:00:00.00</h1>
+        <div id="buttonsBar">
+          <button onclick="chrono.start()">
+            <span class="material-icons">play_arrow</span>
+          </button>
+          <button onclick="chrono.pause()">
+            <span class="material-icons">pause</span>
+          </button>
+          <button onclick="chrono.reset()">
+            <span class="material-icons">restart_alt</span>
+          </button>
+        </div>
+      </div>
+
+      <div id="timer">
+        <h3>Timer</h3>
+        <h1 id="timerDisplay">00:05.00</h1>
+        <div id="buttonsBar">
+          <button onclick="timer.startTimer()">
+            <span class="material-icons">play_arrow</span>
+          </button>
+          <button onclick="timer.stopTimer()">
+            <span class="material-icons">stop</span>
+          </button>
+          <button onclick="timer.resetTimer()">
+            <span class="material-icons">restart_alt</span>
+          </button>
+        </div>
+        <div id="presets">
+          <button onclick="timer.setPreset(1)">1 min</button>
+          <button onclick="timer.setPreset(5)">5 min</button>
+          <button onclick="timer.setPreset(10)">10 min</button>
+          <button onclick="timer.setPreset(25)">25 min</button>
+        </div>
+      </div>
+    </div>
   </body>
 
   <script defer type="text/javascript">
-    const WEEK = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
-    const MONTHS = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC",];
+    // ===========================
+    // Time clock
+    // ===========================
+    const timeClock = (() => {
+      const WEEK = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+      const MONTHS = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC",];
 
-    function updateTime() {
-      let now = new Date();
-      let hours = now.getHours();
-      let ampm = hours >= 12 ? "PM" : "AM";
+      function updateTime() {
+        let now = new Date();
+        let hours = now.getHours();
+        let ampm = hours >= 12 ? "PM" : "AM";
 
-      hours = hours % 12;
-      hours = hours ? hours : 12;
+        hours = hours % 12;
+        hours = hours ? hours : 12;
 
-      document.getElementById("time").innerText =
-        zeroPadding(hours, 2) +
-        ":" +
-        zeroPadding(now.getMinutes(), 2) +
-        ":" +
-        zeroPadding(now.getSeconds(), 2) +
-        " " +
-        ampm;
-      //  + ",";
+        document.getElementById("time").innerText =
+          zeroPadding(hours, 2) +
+          ":" +
+          zeroPadding(now.getMinutes(), 2) +
+          ":" +
+          zeroPadding(now.getSeconds(), 2) +
+          " " +
+          ampm;
+        //  + ",";
 
-      document.getElementById("date").innerText =
-        WEEK[now.getDay()] +
-        " " +
-        MONTHS[now.getMonth()] +
-        "-" +
-        zeroPadding(now.getDate(), 2) +
-        "-" +
-        now.getFullYear();
-    }
+        document.getElementById("date").innerText =
+          WEEK[now.getDay()] +
+          " " +
+          MONTHS[now.getMonth()] +
+          "-" +
+          zeroPadding(now.getDate(), 2) +
+          "-" +
+          now.getFullYear();
+      }
 
-    updateTime();
-    setInterval(updateTime, 1000);
+      updateTime();
+      setInterval(updateTime, 1000);
 
-    function zeroPadding(num, digit) {
-      return String(num).padStart(digit, "0");
-    }
+      function zeroPadding(num, digit) {
+        return String(num).padStart(digit, "0");
+      }
+      return {
+        updateTime,
+      };
+    })();
+
+    // ===========================
+    // Cronometro
+    // ===========================
+    const chrono = (() => {
+      let startTime = 0;
+      let elapsed = 0;
+      let interval = null;
+
+      function formatChronoTime(ms) {
+        const hrs = String(Math.floor(ms / 3600000)).padStart(2, "0");
+        const mins = String(Math.floor((ms % 3600000) / 60000)).padStart(
+          2,
+          "0",
+        );
+        const secs = String(Math.floor((ms % 60000) / 1000)).padStart(2, "0");
+        const hundreds = String(Math.floor((ms % 1000) / 10)).padStart(2, "0");
+        return `${hrs}:${mins}:${secs}.${hundreds}`;
+      }
+
+      function start() {
+        if (interval) return;
+        startTime = Date.now() - elapsed;
+        interval = setInterval(() => {
+          elapsed = Date.now() - startTime;
+          updateChronoDisplay(elapsed);
+        }, 10);
+      }
+
+      function pause() {
+        clearInterval(interval);
+        interval = null;
+      }
+
+      function reset() {
+        pause();
+        elapsed = 0;
+        updateChronoDisplay(0);
+      }
+
+      function updateChronoDisplay(ms) {
+        document.getElementById("display").textContent = formatChronoTime(ms);
+      }
+      return {
+        start,
+        pause,
+        reset,
+      };
+    })();
+    // ===========================
+    // TIMER
+    // ===========================
+    const timer = (() => {
+      const presets = [5, 10, 25, 45];
+      let duration = 5000;
+      let timeLeft = duration;
+      let timerInterval = null;
+      let startTheTime = 0;
+
+      function formatTimerTime(ms) {
+        const mins = String(Math.floor(ms / 60000)).padStart(2, "0");
+        const secs = String(Math.floor((ms % 60000) / 1000)).padStart(2, "0");
+        const centiseconds = String(Math.floor((ms % 1000) / 10)).padStart(
+          2,
+          "0",
+        );
+        return `${mins}:${secs}.${centiseconds}`;
+      }
+
+      function updateTimerDisplay() {
+        document.getElementById("timerDisplay").textContent =
+          formatTimerTime(timeLeft);
+      }
+
+      function startTimer() {
+        if (timerInterval) return;
+        startTheTime = Date.now() - (duration - timeLeft);
+        timerInterval = setInterval(() => {
+          const elapsed = Date.now() - startTheTime;
+          timeLeft = duration - elapsed;
+
+          if (timeLeft <= 0) {
+            timeLeft = 0;
+            stopTimer();
+            triggerAlarm();
+          }
+
+          updateTimerDisplay();
+        }, 10);
+      }
+
+      function stopTimer() {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        stopAlarm();
+      }
+      function resetTimer() {
+        stopTimer();
+        stopAlarm();
+        timeLeft = duration;
+        document.getElementById("timerDisplay").textContent =
+          formatTimerTime(timeLeft);
+        document.getElementById("timerDisplay").classList.remove("blink");
+        document.getElementById("timer").classList.remove("blink");
+      }
+      const alarmSound = new Audio(
+        "src/mixkit-security-facility-breach-alarm-994.wav",
+      );
+      function triggerAlarm() {
+        alarmSound.volume = 0.2;
+        alarmSound.currentTime = 0;
+        alarmSound.play();
+        const display = document.getElementById("timerDisplay");
+        const container = document.getElementById("timer");
+        display.classList.add("blink");
+        container.classList.add("blink");
+      }
+      alarmSound.loop = true;
+      alarmSound.volume = 0.2;
+
+      function playAlarm() {
+        alarmSound.play();
+        let vol = 0.2;
+
+        const fade = setInterval(() => {
+          if (vol < 1) {
+            vol += 0.1;
+            alarmSound.volume = vol;
+          } else {
+            clearInterval(fade);
+          }
+        }, 500);
+      }
+
+      function stopAlarm() {
+        alarmSound.pause();
+        alarmSound.currentTime = 0;
+      }
+      function setPreset(minutes) {
+        stopTimer();
+        duration = minutes * 60 * 1000;
+        timeLeft = duration;
+        const display = document.getElementById("timerDisplay");
+        const container = document.getElementById("timer");
+
+        display.classList.remove("blink");
+        container.classList.remove("blink");
+        
+        document.querySelectorAll("#presets button")
+        .forEach(btn => btn.classList.remove("preset-active"));
+        event.target.classList.add("preset-active");
+        updateTimerDisplay();
+        startTimer();
+        }
+      return {
+        startTimer,
+        stopTimer,
+        resetTimer,
+        setPreset,
+      };
+    })();
   </script>
 </html>
